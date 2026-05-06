@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPantry</title>
+</head>
+<body>
+    <div>
+        <h1>MyRecipe</h1>
+        {% if not user.is_authenticated %}
+        <p>many recipes can take a few basic ingredients and create multitudes of different delicious variants! Take a look at what other people have come up with. Sign up to add your latest and greatest creations, and see what you can make based on what you have.</p>
+        {% endif %}
+    </div>
+    <div>
+    {% if not user.is_authenticated %}
+        <section>
+            <form action="{% url 'home' %}" method="post" class="login">
+                <h2>login</h2>
+                {% csrf_token %} {{ form.as_p}}
+                <input type="hidden" name="next" value="{{ next }}" />
+                <button type="submit" class="btn submit">Sign In</button>
+            </form>
+            <p>Don't have an account?</p>
+            <a href="{% url 'signup' %}">Sign Up</a>
+        </section>
+    {% endif %}    
+    </div>
+    <h3>Let's get started!</h3>
+    <div>
+        <a href="{% url 'recipes' %}">Recipes</a>
+        <a href="{% url 'ingredients' %}">Ingredients</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'pantry' %}">Pantry</a>
+        {% endif %}
+    </div>    
+</body>
+</html>
+

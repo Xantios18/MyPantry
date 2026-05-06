@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MyPantry</title>
+        {% block head %}
+        {% endblock head %}
+    </head>
+    <body>
+        <header>
+            <nav>
+                <ul>
+                    {% if user.is_authenticated %}
+                    {% comment %} user only links {% endcomment %}
+                    <li><a href="{% url 'pantry' %}">Pantry</a></li>
+                    <li>
+                        <form id="logout-form" method="post" action={% url 'logout' %}>
+                            {% csrf_token %}
+                            <button type="submit">Log Out</button>
+                        </form>
+                    </li>
+                    {% else %}
+                    {% comment %} general access links {% endcomment %}
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'recipes' %}">Recipes</a></li>
+                    <li><a href="{% url 'ingredients' %}">Ingredients</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
+        <main>
+            {% block content %}
+            {% endblock content %}
+        </main>
+    </body>
+</html>
