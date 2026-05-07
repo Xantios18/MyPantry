@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+<h1>All Ingredients</h1>
+<div>
+    {% if user.is_authenticated %}
+    <a href="{% url 'add-ingredient' %}">Add New Ingredient</a>
+    {% endif %}
+</div>
+<section>
+    <ul>
+        {% for ingredient in ingrdient_list %}
+
+        {% print user %}
+
+            {% if not user.is_authenticated %}
+                <li>{{ ingredient.name }}</li>
+            {% elif ingredient.user.id != user.id %}
+            {% comment %} the button probably needs to be a form. once I figure that out, copy into else block too. {% endcomment %}
+                <li>{{ ingredient.name }} <button>Add to pantry</button> </li>
+            {% else %}
+                <li><a href="{% url 'edit-ingredient' %}">{{ ingredient.name }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</section>
+{% endblock content %}
