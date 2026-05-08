@@ -12,17 +12,14 @@
 </div>
 <section>
     <ul>
-        {% for ingredient in ingrdient_list %}
-
-        {% print user %}
-
+        {% for ingredient in ingredient_list.all %}
             {% if not user.is_authenticated %}
                 <li>{{ ingredient.name }}</li>
-            {% elif ingredient.user.id != user.id %}
+            {% elif ingredient.user != user %}
             {% comment %} the button probably needs to be a form. once I figure that out, copy into else block too. {% endcomment %}
                 <li>{{ ingredient.name }} <button>Add to pantry</button> </li>
             {% else %}
-                <li><a href="{% url 'edit-ingredient' %}">{{ ingredient.name }}</a></li>
+                <li><a href="{% url 'edit-ingredient' ingredient.id %}">{{ ingredient.name }}</a></li>
             {% endif %}
         {% endfor %}
     </ul>

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+<div>
+    {% if ingredient %}
+        <h1>Edit {{ ingredient.name }}</h1>
+        <a href="{% url 'delete-ingredient' ingredient.id %}">Delete Ingredient</a>
+
+    {% else %}
+        <h1>New Ingredient</h1>
+    {% endif %}
+</div>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock content %}

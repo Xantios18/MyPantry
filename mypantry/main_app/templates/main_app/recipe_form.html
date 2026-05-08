@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+<div>
+    {% if recipe %}
+        <h1>Edit {{ recipe.name }}</h1>
+    {% else %}
+        <h1>New Recipe</h1>
+    {% endif %}
+</div>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+    <button type="submit">Submit</button>
+</form>
+
+{% endblock content %}
