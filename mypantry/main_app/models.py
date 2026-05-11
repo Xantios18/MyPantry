@@ -12,7 +12,7 @@ class Ingredient(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return reverse("edit-ingredient", kwargs={"pk": self.id})
+        return reverse("ingredients")
     
     class Meta:
         ordering = ['name']

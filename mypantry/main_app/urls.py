@@ -14,4 +14,7 @@ urlpatterns = [
     # no ingredient detail view necessary. go straight to update view
     path('ingredients/<int:pk>/edit/', views.IngredientUpdate.as_view(), name='edit-ingredient'),
     path('ingredients/<int:pk>/delete/', views.IngredientDelete.as_view(), name='delete-ingredient'),
+    # path('recipes/<int:recipe_id>/associate-ingredient/', views.recipe_associate_ingredient, name='recipe-associate-ingredient'),
+    path('recipes/<int:recipe_id>/associate-ingredient/<int:ingredient_id>', views.recipe_associate_ingredient, name='recipe-associate-ingredient'),
+    path('recipes/<int:recipe_id>/remove-ingredient/<int:ingredient_id>/', views.recipe_remove_ingredient, name='recipe-remove-ingredient'),
 ]

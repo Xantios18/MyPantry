@@ -13,11 +13,39 @@
 </div>
 <div>
     <p>{{ recipe.description }}</p>
-    <ul>
-        {% for ingredient in recipe.ingredients.all %}
-        <li>{{ ingredient }}</li>
-        {% endfor %}
-    </ul>
+    {% if recipe.ingredients.count %}
+        {% if not user.is_authenticated or recipe.user != user %}
+        <ul>
+            {% for ingredient in recipe.ingredients.all %}
+            <li>{{ ingredient }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <ul>
+            {% for ingredient in recipe.ingredients.all %}
+            <li>
+                {{ ingredient }}
+                <form action="{% url 'recipe-remove-ingredient' recipe.id ingredient.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Remove Ingredient</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endif %}
+    {% if recipe.user == user %}
+    <p>Add Ingredients</p>
+    {% for ingredient in available_ingredients %}
+        <form action="{% url 'recipe-associate-ingredient' recipe.id ingredient.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">{{ ingredient.name }}</button>
+        </form>
+    {% endfor %}
+
+    <p>Not seeing an ingredient you need?</p>
+    <a href="{% url 'add-ingredient' %}">Add New Ingredient</a>
+    {% endif %}
 </div>
 <div>
     {% if user.is_authenticated %}

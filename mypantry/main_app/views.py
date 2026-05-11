@@ -42,6 +42,12 @@ class RecipeList(ListView):
 class RecipeDetail(DetailView):
     model = Recipe
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        recipe = self.get_object()
+        context['available_ingredients'] = Ingredient.objects.exclude(id__in=recipe.ingredients.values_list('id', flat=True))
+        return context
+
 class RecipeUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Recipe
     fields = ['name', 'description']
@@ -93,3 +99,17 @@ class IngredientDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         ingredient = self.get_object()
         return self.request.user == ingredient.user
+    
+# def recipe_associate_ingredient(request, recipe_id):
+#     ingredient_id = request.POST.get("ingredient-id")
+#     print(ingredient_id)
+#     Recipe.objects.get(id=recipe_id).ingredients.add(ingredient_id)
+#     return redirect('recipe-details', pk=recipe_id)
+
+def recipe_associate_ingredient(request, recipe_id, ingredient_id):
+    Recipe.objects.get(id=recipe_id).ingredients.add(ingredient_id)
+    return redirect('recipe-details', pk=recipe_id)
+
+def recipe_remove_ingredient(request, recipe_id, ingredient_id):
+    Recipe.objects.get(id=recipe_id).ingredients.remove(ingredient_id)
+    return redirect('recipe-details', pk=recipe_id)
