@@ -41,5 +41,5 @@ class Variant(models.Model):
         return self.name
     
     def get_absolute_url(self):
-        return reverse("variant-details", kwargs={"variant_id": self.id})
+        return reverse("recipe-variant", kwargs={"pk": self.id, "recipe_id": self.recipe.id})
     

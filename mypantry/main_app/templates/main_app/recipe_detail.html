@@ -47,17 +47,17 @@
     <a href="{% url 'add-ingredient' %}">Add New Ingredient</a>
     {% endif %}
 </div>
+<h3>Variants</h3>
 <div>
     {% if user.is_authenticated %}
-    {% comment %} <a href="{% url 'add-variant' recipe.id %}">Create a New Variant</a> {% endcomment %}
+    <a href="{% url 'add-variant' recipe.id %}">Create a New Variant</a>
     {% endif %}
 </div>
 <div>
-    <h3>Variants</h3>
     <ul>
-        {% comment %} {% for variant in recipe.variant_set.all %} {% endcomment %}
-        {% comment %} <li><a href="{% url 'variant' recipe.id variant.id %}">{{ variant.name }}</a></li> {% endcomment %}
-        {% comment %} {% endfor %} {% endcomment %}
+        {% for variant in recipe.variant_set.all %}
+        <li><a href="{% url 'recipe-variant' recipe.id variant.id %}">{{ variant.name }}</a></li>
+        {% endfor %}
     </ul>
 </div>
 

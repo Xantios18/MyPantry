@@ -1,11 +1,14 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.core.exceptions import PermissionDenied
+from django.urls import reverse
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient, Variant
 
 # Create your views here.
 # def home(request):
@@ -94,22 +97,81 @@ class IngredientUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class IngredientDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Ingredient
-    success_url = '/recipes/'
+    success_url = '/ingredients/'
 
     def test_func(self):
         ingredient = self.get_object()
         return self.request.user == ingredient.user
     
-# def recipe_associate_ingredient(request, recipe_id):
-#     ingredient_id = request.POST.get("ingredient-id")
-#     print(ingredient_id)
-#     Recipe.objects.get(id=recipe_id).ingredients.add(ingredient_id)
-#     return redirect('recipe-details', pk=recipe_id)
-
+@login_required
 def recipe_associate_ingredient(request, recipe_id, ingredient_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.user != recipe.user:
+        raise PermissionDenied
     Recipe.objects.get(id=recipe_id).ingredients.add(ingredient_id)
     return redirect('recipe-details', pk=recipe_id)
 
+@login_required
 def recipe_remove_ingredient(request, recipe_id, ingredient_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    if request.user != recipe.user:
+        raise PermissionDenied
     Recipe.objects.get(id=recipe_id).ingredients.remove(ingredient_id)
     return redirect('recipe-details', pk=recipe_id)
+
+class VariantCreate(LoginRequiredMixin, CreateView):
+    model = Variant
+    fields = ['name', 'description']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.recipe = get_object_or_404(Recipe, id=self.kwargs['recipe_id'])
+        return super().form_valid(form)
+    
+class VariantDetail(DetailView):
+    model = Variant
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        variant = self.get_object()
+        excluded_ids = list(variant.ingredients.values_list('id', flat=True)) + list(variant.recipe.ingredients.values_list('id', flat=True))
+        context['available_ingredients'] = Ingredient.objects.exclude(id__in=excluded_ids)
+        return context
+    
+class VariantUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Variant
+    fields = ['name', 'description']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        variant = self.get_object()
+        return self.request.user == variant.user
+
+class VariantDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Variant
+
+    def get_success_url(self):
+        return reverse('recipe-details', kwargs={'pk': self.object.recipe.id})
+
+    def test_func(self):
+        variant = self.get_object()
+        return self.request.user == variant.user
+
+@login_required
+def variant_associate_ingredient(request, recipe_id, variant_id, ingredient_id):
+    variant = get_object_or_404(Variant, id=variant_id)
+    if request.user != variant.user:
+        raise PermissionDenied
+    Variant.objects.get(id=variant_id).ingredients.add(ingredient_id)
+    return redirect('recipe-variant', recipe_id=recipe_id, pk=variant_id)
+
+@login_required
+def variant_remove_ingredient(request, recipe_id, variant_id, ingredient_id):
+    variant = get_object_or_404(Variant, id=variant_id)
+    if request.user != variant.user:
+        raise PermissionDenied
+    Variant.objects.get(id=variant_id).ingredients.remove(ingredient_id)
+    return redirect('recipe-variant', recipe_id=recipe_id, pk=variant_id)

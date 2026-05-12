@@ -4,11 +4,11 @@
 {% endblock head %}
 
 {% block content %}
-<h1>Delete Ingredient?</h1>
-<h2>Are you sure you want to delete {{ ingredient.name }}?</h2>
+<h1>Delete Variant?</h1>
+<h2>Are you sure you want to delete your variant for {{ variant.name }} ({{ variant.recipe.name }})?</h2>
 <form action="" method="post">
     {% csrf_token %}
-    <a href="{% url 'ingredients' %}">Cancel</a>
+    <a href="{% url 'recipe-variant' variant.recipe.id variant.id %}">Cancel</a>
     <button type="submit">Yes - Delete</button>
 </form>
 {% endblock content %}

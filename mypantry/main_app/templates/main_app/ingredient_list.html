@@ -16,8 +16,7 @@
             {% if not user.is_authenticated %}
                 <li>{{ ingredient.name }}</li>
             {% elif ingredient.user != user %}
-            {% comment %} the button probably needs to be a form. once I figure that out, copy into else block too. {% endcomment %}
-                <li>{{ ingredient.name }} <button>Add to pantry</button> </li>
+                <li>{{ ingredient.name }}</li>
             {% else %}
                 <li><a href="{% url 'edit-ingredient' ingredient.id %}">{{ ingredient.name }}</a></li>
             {% endif %}

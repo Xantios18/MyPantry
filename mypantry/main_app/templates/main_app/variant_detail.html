@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock head %}
+
+{% block content %}
+<h2>{{ variant.name }}</h2>
+<div>
+    {% if user.is_authenticated and variant.user == user %}
+    <a href="{% url 'edit-variant' variant.recipe.id variant.id%}">Edit Variant</a>
+    <a href="{% url 'delete-variant' variant.recipe.id variant.id %}">Delete Variant</a>
+    {% endif %}
+</div>
+<div>
+    <p>{{ variant.description }}</p>
+    {% if variant.ingredients.count %}
+        {% if not user.is_authenticated or variant.user != user %}
+        <ul>
+            {% for ingredient in variant.ingredients.all %}
+            <li>{{ ingredient }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <ul>
+            {% for ingredient in variant.ingredients.all %}
+            <li>
+                {{ ingredient }}
+                <form action="{% url 'variant-remove-ingredient' variant.recipe.id variant.id ingredient.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Remove Ingredient</button>
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endif %}
+    {% if variant.user == user %}
+    <p>Add Ingredients</p>
+    {% for ingredient in available_ingredients %}
+        <form action="{% url 'variant-associate-ingredient' variant.recipe.id variant.id ingredient.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">{{ ingredient.name }}</button>
+        </form>
+    {% endfor %}
+
+    <p>Not seeing an ingredient you need?</p>
+    <a href="{% url 'add-ingredient' %}">Add New Ingredient</a>
+    {% endif %}
+</div>
+
+
+{% endblock content %}
