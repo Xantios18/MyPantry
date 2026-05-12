@@ -1,0 +1,31 @@
+body {
+    background-color: lightgray;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    border-radius: 6px;
+}
+
+nav>ul {
+    background-color: gray;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+nav>ul>li {
+    margin: 0 10px;
+}
+
+.add-ingredients {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+}

@@ -35,13 +35,15 @@
         {% endif %}
     {% endif %}
     {% if variant.user == user %}
-    <p>Add Ingredients</p>
+    <h5>Add Ingredients</h5>
+    <div class="add-ingredients">
     {% for ingredient in available_ingredients %}
         <form action="{% url 'variant-associate-ingredient' variant.recipe.id variant.id ingredient.id %}" method="post">
             {% csrf_token %}
             <button type="submit">{{ ingredient.name }}</button>
         </form>
-    {% endfor %}
+        {% endfor %}
+    </div>
 
     <p>Not seeing an ingredient you need?</p>
     <a href="{% url 'add-ingredient' %}">Add New Ingredient</a>

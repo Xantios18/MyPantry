@@ -12,7 +12,9 @@
     {% endif %}
 </div>
 <div>
+    <h4>Description</h4>
     <p>{{ recipe.description }}</p>
+    <h4>Ingredients</h4>
     {% if recipe.ingredients.count %}
         {% if not user.is_authenticated or recipe.user != user %}
         <ul>
@@ -35,19 +37,20 @@
         {% endif %}
     {% endif %}
     {% if recipe.user == user %}
-    <p>Add Ingredients</p>
-    {% for ingredient in available_ingredients %}
-        <form action="{% url 'recipe-associate-ingredient' recipe.id ingredient.id %}" method="post">
-            {% csrf_token %}
-            <button type="submit">{{ ingredient.name }}</button>
-        </form>
-    {% endfor %}
-
+    <h5>Add Ingredients</h5>
+    <div class="add-ingredients">
+        {% for ingredient in available_ingredients %}
+            <form action="{% url 'recipe-associate-ingredient' recipe.id ingredient.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">{{ ingredient.name }}</button>
+            </form>
+        {% endfor %}
+    </div>
     <p>Not seeing an ingredient you need?</p>
     <a href="{% url 'add-ingredient' %}">Add New Ingredient</a>
     {% endif %}
 </div>
-<h3>Variants</h3>
+<h4>Variants</h4>
 <div>
     {% if user.is_authenticated %}
     <a href="{% url 'add-variant' recipe.id %}">Create a New Variant</a>
